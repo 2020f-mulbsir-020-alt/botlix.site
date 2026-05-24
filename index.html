@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Botlix - Automation Built for Modern Systems</title>
+  <meta name="description" content="Botlix is an AI automation and bot platform for intelligent workflows, integrations, and scalable execution systems.">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@500;600;700&display=swap');
+
+    :root {
+      --bg: #111827;
+      --bg-alt: #0b1220;
+      --panel: rgba(17, 24, 39, 0.88);
+      --panel-strong: rgba(15, 23, 42, 0.96);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --lime: #a3ff12;
+      --cyan: #66e8ff;
+      --cyan-soft: rgba(102, 232, 255, 0.16);
+      --lime-soft: rgba(163, 255, 18, 0.16);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+      --radius: 24px;
+      --radius-sm: 16px;
+      --max: 1200px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(102, 232, 255, 0.12), transparent 26%),
+        radial-gradient(circle at 85% 12%, rgba(163, 255, 18, 0.11), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(102, 232, 255, 0.08), transparent 26%),
+        linear-gradient(180deg, #111827 0%, #0b1220 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.82), transparent 90%);
+      opacity: 0.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      position: relative;
+    }
+
+    .container {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: rgba(11, 18, 32, 0.65);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 76px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(163, 255, 18, 0.95), rgba(102, 232, 255, 0.85));
+      color: #05111f;
+      box-shadow: 0 0 0 8px rgba(163, 255, 18, 0.08);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .nav-links a {
+      position: relative;
+      transition: color 180ms ease;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--lime), var(--cyan));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 180ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-weight: 700;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(163, 255, 18, 0.4);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+    }
+
+    .button-primary {
+      background: linear-gradient(135deg, rgba(163, 255, 18, 1), rgba(163, 255, 18, 0.84));
+      color: #05111f;
+      border-color: transparent;
+      box-shadow: 0 18px 40px rgba(163, 255, 18, 0.18);
+    }
+
+    .button-primary:hover {
+      background: linear-gradient(135deg, rgba(163, 255, 18, 1), rgba(102, 232, 255, 0.95));
+    }
+
+    .hero {
+      padding: 70px 0 28px;
+    }
+
+    .hero-shell {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 26px;
+      align-items: stretch;
+    }
+
+    .hero-copy,
+    .hero-visual,
+    .section-panel {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.96), rgba(11, 18, 32, 0.84));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-copy {
+      padding: 34px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(163, 255, 18, 0.24);
+      background: rgba(163, 255, 18, 0.07);
+      color: #d4ff87;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin: 0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      letter-spacing: -0.03em;
+    }
+
+    .hero h1 {
+      margin-top: 18px;
+      font-size: clamp(3rem, 7vw, 5.8rem);
+      line-height: 0.92;
+      max-width: 10ch;
+    }
+
+    .hero h1 span {
+      color: var(--lime);
+    }
+
+    .hero p {
+      margin: 20px 0 0;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .meta-chip {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .meta-chip strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .meta-chip span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .hero-visual {
+      padding: 22px;
+      min-height: 100%;
+    }
+
+    .dashboard-frame {
+      height: 100%;
+      border-radius: calc(var(--radius) - 6px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      background:
+        radial-gradient(circle at top left, rgba(102, 232, 255, 0.14), transparent 30%),
+        radial-gradient(circle at top right, rgba(163, 255, 18, 0.13), transparent 24%),
+        linear-gradient(180deg, rgba(11, 18, 32, 0.92), rgba(17, 24, 39, 0.98));
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-frame::before,
+    .dashboard-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .dashboard-frame::before {
+      background: linear-gradient(90deg, transparent 0, rgba(102, 232, 255, 0.18) 50%, transparent 100%);
+      width: 120px;
+      height: 2px;
+      top: 22%;
+      left: -20%;
+      animation: flowMove 7s linear infinite;
+      filter: blur(0.5px);
+    }
+
+    .dashboard-frame::after {
+      background: linear-gradient(180deg, transparent 0, rgba(163, 255, 18, 0.18) 50%, transparent 100%);
+      width: 2px;
+      height: 120px;
+      left: 66%;
+      top: -20%;
+      animation: flowDrop 8s linear infinite;
+      filter: blur(0.5px);
+    }
+
+    .bot-map {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .bot-node,
+    .bot-panel,
+    .mini-log,
+    .integration-pill,
+    .stat-card,
+    .service-card,
+    .step-card,
+    .testimonial-card {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .bot-node,
+    .bot-panel {
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .bot-node {
+      min-height: 110px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bot-node::after {
+      content: '';
+      position: absolute;
+      inset: auto -24px 12px auto;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(102, 232, 255, 0.28), transparent 68%);
+      animation: pulse 3.6s ease-in-out infinite;
+    }
+
+    .node-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #d6deeb;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .node-value {
+      margin-top: 18px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .node-sub {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .bot-panel {
+      grid-column: 1 / -1;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .panel-title {
+      font-size: 0.86rem;
+      color: #d5def0;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .signal {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--lime);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .signal::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--lime);
+      box-shadow: 0 0 0 8px rgba(163, 255, 18, 0.12);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    .workflow-line {
+      position: relative;
+      height: 8px;
+      margin: 16px 0 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(102, 232, 255, 0.2), rgba(163, 255, 18, 0.24), rgba(255, 255, 255, 0.06));
+      overflow: hidden;
+    }
+
+    .workflow-line::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 42%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.48), transparent);
+      animation: scan 4.5s linear infinite;
+      mix-blend-mode: screen;
+    }
+
+    .mini-log {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+    }
+
+    .mini-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 8px rgba(163, 255, 18, 0.1);
+    }
+
+    .mini-log strong,
+    .metric strong,
+    .integration-pill strong {
+      font-size: 0.95rem;
+    }
+
+    .mini-log span,
+    .metric span,
+    .integration-pill span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .timeline {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .step-card {
+      position: relative;
+      padding: 18px 16px;
+      border-radius: 18px;
+      min-height: 140px;
+      overflow: hidden;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .step-card::before {
+      content: '';
+      position: absolute;
+      inset: 18px 18px auto auto;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 10px rgba(163, 255, 18, 0.08);
+    }
+
+    .step-card::after {
+      content: '';
+      position: absolute;
+      left: 16px;
+      top: 50px;
+      right: 16px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(102, 232, 255, 0.5), transparent);
+    }
+
+    .step-card:hover,
+    .service-card:hover,
+    .testimonial-card:hover,
+    .integration-pill:hover,
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(163, 255, 18, 0.35);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .section {
+      padding: 28px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 56ch;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .service-card {
+      border-radius: 20px;
+      padding: 20px;
+      min-height: 170px;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(102, 232, 255, 0.2), rgba(163, 255, 18, 0.16));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--lime);
+      font-size: 1.05rem;
+      margin-bottom: 16px;
+    }
+
+    .service-card h3,
+    .testimonial-card h3 {
+      font-size: 1.2rem;
+    }
+
+    .service-card p,
+    .testimonial-card p,
+    .step-card p,
+    .stat-card p,
+    .integration-pill p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .service-footer {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #d9f99d;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .dashboard-showcase {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 14px;
+    }
+
+    .showcase-card {
+      border-radius: 22px;
+      padding: 20px;
+      min-height: 240px;
+    }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .metric {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .metric strong {
+      display: block;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 1.8rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .status-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .status-bar {
+      grid-column: 2 / 4;
+      height: 8px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .status-bar::before {
+      content: '';
+      display: block;
+      height: 100%;
+      width: var(--fill, 50%);
+      background: linear-gradient(90deg, var(--lime), var(--cyan));
+      border-radius: inherit;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      position: relative;
+      padding: 22px 18px;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      inset: auto -20px -20px auto;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(163, 255, 18, 0.18), transparent 65%);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1;
+      margin-bottom: 10px;
+      color: var(--lime);
+    }
+
+    .integrations-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .integration-pill {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 18px;
+      border-radius: 18px;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .integration-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: rgba(102, 232, 255, 0.12);
+      border: 1px solid rgba(102, 232, 255, 0.22);
+      color: var(--cyan);
+      font-weight: 800;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .testimonial-card {
+      border-radius: 20px;
+      padding: 22px;
+      min-height: 210px;
+    }
+
+    .testimonial-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(163, 255, 18, 0.22), rgba(102, 232, 255, 0.14));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .testimonial-card p {
+      margin: 0;
+    }
+
+    .testimonial-card footer {
+      margin-top: 16px;
+      color: #d5def0;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .cta {
+      padding: 26px 0 38px;
+    }
+
+    .cta-panel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid rgba(163, 255, 18, 0.18);
+      background:
+        radial-gradient(circle at 20% 30%, rgba(163, 255, 18, 0.16), transparent 24%),
+        radial-gradient(circle at 86% 18%, rgba(102, 232, 255, 0.12), transparent 20%),
+        linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(11, 18, 32, 0.98));
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .cta-panel::before {
+      content: '';
+      position: absolute;
+      inset: auto -10% 14px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(163, 255, 18, 0.55), rgba(102, 232, 255, 0.55), transparent);
+      animation: scan 5s linear infinite;
+    }
+
+    .cta-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .cta h2 {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      margin-bottom: 10px;
+    }
+
+    .cta p {
+      margin: 0;
+      max-width: 52ch;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .footer {
+      padding: 18px 0 34px;
+    }
+
+    .footer-panel {
+      padding: 22px 0 0;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .section-panel {
+      padding: 22px;
+    }
+
+    .section-panel .section-head {
+      margin-bottom: 16px;
+    }
+
+    .connectors {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent 0 18%, rgba(102, 232, 255, 0.12) 18% 18.2%, transparent 18.2% 39%, rgba(163, 255, 18, 0.14) 39% 39.2%, transparent 39.2% 100%),
+        linear-gradient(180deg, transparent 0 34%, rgba(255, 255, 255, 0.05) 34% 34.2%, transparent 34.2% 64%, rgba(255, 255, 255, 0.05) 64% 64.2%, transparent 64.2% 100%);
+      opacity: 0.55;
+      mix-blend-mode: screen;
+    }
+
+    .section-label {
+      color: var(--lime);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 800;
+    }
+
+    @keyframes scan {
+      from {
+        transform: translateX(-120%);
+      }
+      to {
+        transform: translateX(320%);
+      }
+    }
+
+    @keyframes flowMove {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(420%);
+      }
+    }
+
+    @keyframes flowDrop {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(420%);
+      }
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(0.96);
+        opacity: 0.75;
+      }
+      50% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 1120px) {
+      .hero-shell,
+      .dashboard-showcase,
+      .cta-inner {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .timeline,
+      .services-grid,
+      .stats-grid,
+      .integrations-grid,
+      .testimonial-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero h1 {
+        max-width: 12ch;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav {
+        flex-wrap: wrap;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        order: 3;
+        width: 100%;
+        justify-content: space-between;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .nav-actions,
+      .section-head,
+      .footer-panel,
+      .hero-meta,
+      .panel-header,
+      .testimonial-top {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .hero,
+      .section,
+      .cta {
+        padding-top: 18px;
+      }
+
+      .hero-copy,
+      .hero-visual,
+      .cta-panel,
+      .section-panel {
+        padding: 18px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.5rem, 15vw, 4rem);
+      }
+
+      .timeline,
+      .services-grid,
+      .stats-grid,
+      .integrations-grid,
+      .testimonial-grid,
+      .showcase-grid,
+      .bot-map {
+        grid-template-columns: 1fr;
+      }
+
+      .step-card,
+      .service-card,
+      .testimonial-card,
+      .stat-card,
+      .integration-pill,
+      .showcase-card {
+        min-height: auto;
+      }
+
+      .hero-meta {
+        gap: 10px;
+      }
+
+      .meta-chip {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="container nav">
+        <a class="brand" href="#home" aria-label="Botlix home">
+          <span class="brand-mark">B</span>
+          <span>Botlix</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#services">Services</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#dashboard">Dashboard</a>
+          <a href="#integrations">Integrations</a>
+          <a href="#testimonials">Reviews</a>
+        </nav>
+        <div class="nav-actions">
+          <a class="button" href="#dashboard">Open Console</a>
+          <a class="button button-primary" href="#cta">Start Automating</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <div class="container hero-shell">
+          <article class="hero-copy">
+            <div class="eyebrow">Automation Command Interface</div>
+            <h1>Automation Built for <span>Modern Systems</span></h1>
+            <p>
+              Botlix orchestrates AI bots, workflow execution, and live integrations inside a fast-moving automation platform.
+              Build connected systems, trigger actions instantly, and scale digital operations with operational precision.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#cta">Start Automating</a>
+              <a class="button" href="#integrations">View Integrations</a>
+            </div>
+            <div class="hero-meta">
+              <div class="meta-chip">
+                <strong>AI Task Routing</strong>
+                <span>Directs requests to the right bot, workflow, or connected service.</span>
+              </div>
+              <div class="meta-chip">
+                <strong>Live Orchestration</strong>
+                <span>Monitors execution paths with visible status and responsive control points.</span>
+              </div>
+              <div class="meta-chip">
+                <strong>Integration Ready</strong>
+                <span>Connects with tools, CRMs, support stacks, and internal automation layers.</span>
+              </div>
+            </div>
+          </article>
+
+          <aside class="hero-visual">
+            <div class="dashboard-frame">
+              <div class="bot-map">
+                <div class="bot-node">
+                  <div class="node-label">Trigger</div>
+                  <div class="node-value">Incoming Signal</div>
+                  <div class="node-sub">A new request enters the automation queue and is mapped to the correct bot.</div>
+                </div>
+                <div class="bot-node">
+                  <div class="node-label">Execution</div>
+                  <div class="node-value">AI Bot Online</div>
+                  <div class="node-sub">The workflow engine responds immediately and starts the task sequence.</div>
+                </div>
+                <div class="bot-panel">
+                  <div class="panel-header">
+                    <div>
+                      <div class="panel-title">Workflow Link Map</div>
+                      <div class="signal">System synced and responding</div>
+                    </div>
+                    <div class="section-label">Active Route</div>
+                  </div>
+                  <div class="workflow-line"></div>
+                  <div class="mini-log">
+                    <span class="mini-dot"></span>
+                    <div>
+                      <strong>Botlix queue processed 128 tasks</strong>
+                      <span>Execution completed across support, CRM, and notification channels.</span>
+                    </div>
+                    <span style="color: var(--lime); font-weight: 800;">+18%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="services" class="section">
+        <div class="container section-panel">
+          <div class="section-head">
+            <div>
+              <div class="section-label">Automation Services</div>
+              <h2>Modular bot systems for execution-heavy teams.</h2>
+            </div>
+            <p>
+              Build reusable automation blocks that answer, route, notify, connect, and execute with minimal manual overhead.
+            </p>
+          </div>
+          <div class="services-grid">
+            <article class="service-card">
+              <div class="icon">AI</div>
+              <h3>AI Chatbots</h3>
+              <p>Conversational bots that respond in real time, qualify leads, and route users into the right workflow.</p>
+              <div class="service-footer">Launch dialogue streams →</div>
+            </article>
+            <article class="service-card">
+              <div class="icon">WF</div>
+              <h3>Workflow Automation</h3>
+              <p>Connect triggers, actions, and conditions into operational flows that execute with system-level consistency.</p>
+              <div class="service-footer">Build flow logic →</div>
+            </article>
+            <article class="service-card">
+              <div class="icon">CRM</div>
+              <h3>CRM Integrations</h3>
+              <p>Sync records, update pipelines, and automate follow-ups across customer management infrastructure.</p>
+              <div class="service-footer">Connect data streams →</div>
+            </article>
+            <article class="service-card">
+              <div class="icon">NT</div>
+              <h3>Smart Notifications</h3>
+              <p>Deliver high-signal alerts to the right people when tasks change state or require intervention.</p>
+              <div class="service-footer">Ship status updates →</div>
+            </article>
+            <article class="service-card">
+              <div class="icon">CS</div>
+              <h3>Customer Support Bots</h3>
+              <p>Resolve FAQs, triage requests, and reduce response time with always-on support automation.</p>
+              <div class="service-footer">Handle support load →</div>
+            </article>
+            <article class="service-card">
+              <div class="icon">API</div>
+              <h3>API Automation Systems</h3>
+              <p>Dispatch API calls, chain services, and automate backend operations across your digital stack.</p>
+              <div class="service-footer">Execute API tasks →</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow" class="section">
+        <div class="container section-panel">
+          <div class="section-head">
+            <div>
+              <div class="section-label">Workflow Process</div>
+              <h2>A live automation map from trigger to scale.</h2>
+            </div>
+            <p>Every step is structured like an operational pipeline so teams can see exactly how work moves through Botlix.</p>
+          </div>
+          <div class="timeline">
+            <article class="step-card">
+              <h3>Connect Apps</h3>
+              <p>Bring tools into the command layer and expose the signals that start automation.</p>
+            </article>
+            <article class="step-card">
+              <h3>Configure Bots</h3>
+              <p>Set decision logic, response behavior, and execution rules for each automation node.</p>
+            </article>
+            <article class="step-card">
+              <h3>Automate Tasks</h3>
+              <p>Push actions across your stack with precise routing and minimal human touchpoints.</p>
+            </article>
+            <article class="step-card">
+              <h3>Analyze Results</h3>
+              <p>Review logs, outputs, and throughput metrics to validate every workflow path.</p>
+            </article>
+            <article class="step-card">
+              <h3>Scale Operations</h3>
+              <p>Extend the system across teams, channels, and processes without redesigning the workflow core.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="section">
+        <div class="container section-panel">
+          <div class="section-head">
+            <div>
+              <div class="section-label">Dashboard Showcase</div>
+              <h2>Command-center visuals for active automation systems.</h2>
+            </div>
+            <p>Botlix surfaces status, logs, and analytics inside a clean operational view built for fast decisions.</p>
+          </div>
+          <div class="dashboard-showcase">
+            <article class="showcase-card">
+              <h3>Automation Status</h3>
+              <div class="showcase-grid">
+                <div class="metric">
+                  <strong>248</strong>
+                  <span>Live workflows</span>
+                </div>
+                <div class="metric">
+                  <strong>92%</strong>
+                  <span>Active throughput</span>
+                </div>
+                <div class="metric">
+                  <strong>14</strong>
+                  <span>Trigger sources</span>
+                </div>
+                <div class="metric">
+                  <strong>03s</strong>
+                  <span>Average response</span>
+                </div>
+              </div>
+            </article>
+            <article class="showcase-card">
+              <h3>Execution Log</h3>
+              <div class="status-stack">
+                <div class="status-row">
+                  <span class="mini-dot"></span>
+                  <div>
+                    <strong>Support bot resolved 84 inquiries</strong>
+                    <div class="status-bar" style="--fill: 84%"></div>
+                  </div>
+                  <span style="color: var(--lime); font-weight: 800;">complete</span>
+                </div>
+                <div class="status-row">
+                  <span class="mini-dot" style="background: var(--cyan);"></span>
+                  <div>
+                    <strong>CRM enrichment synced across 12 pipelines</strong>
+                    <div class="status-bar" style="--fill: 72%"></div>
+                  </div>
+                  <span style="color: var(--cyan); font-weight: 800;">live</span>
+                </div>
+                <div class="status-row">
+                  <span class="mini-dot" style="background: #dbeafe;"></span>
+                  <div>
+                    <strong>Notification engine queued follow-up jobs</strong>
+                    <div class="status-bar" style="--fill: 58%"></div>
+                  </div>
+                  <span style="color: #dbeafe; font-weight: 800;">queued</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container section-panel">
+          <div class="section-head">
+            <div>
+              <div class="section-label">Live Statistics</div>
+              <h2>High-volume automation at platform scale.</h2>
+            </div>
+            <p>Compact metrics show the kind of execution density Botlix is built to sustain.</p>
+          </div>
+          <div class="stats-grid">
+            <article class="stat-card">
+              <strong>5M+</strong>
+              <h3>Tasks Automated</h3>
+              <p>Fast task handling across customer flows, internal operations, and system triggers.</p>
+            </article>
+            <article class="stat-card">
+              <strong>120K+</strong>
+              <h3>Active Bots</h3>
+              <p>Distributed bot workers running across automation paths and intelligent responses.</p>
+            </article>
+            <article class="stat-card">
+              <strong>99.9%</strong>
+              <h3>Workflow Reliability</h3>
+              <p>Execution quality designed for stable production environments and mission-critical output.</p>
+            </article>
+            <article class="stat-card">
+              <strong>350+</strong>
+              <h3>Platform Integrations</h3>
+              <p>Build connected systems without breaking the speed of your operating layer.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="integrations" class="section">
+        <div class="container section-panel">
+          <div class="section-head">
+            <div>
+              <div class="section-label">Integration Ecosystem</div>
+              <h2>Connect the tools that already run your operations.</h2>
+            </div>
+            <p>Everything is arranged like a structured network, so the platform reads as a live automation fabric.</p>
+          </div>
+          <div class="integrations-grid">
+            <article class="integration-pill"><div class="integration-icon">S</div><div><strong>Slack</strong><p>Trigger team messages and response flows.</p></div></article>
+            <article class="integration-pill"><div class="integration-icon">D</div><div><strong>Discord</strong><p>Route events into community automation channels.</p></div></article>
+            <article class="integration-pill"><div class="integration-icon">Sh</div><div><strong>Shopify</strong><p>Sync orders, updates, and commerce events.</p></div></article>
+            <article class="integration-pill"><div class="integration-icon">G</div><div><strong>Gmail</strong><p>Automate inbox responses and email-driven tasks.</p></div></article>
+            <article class="integration-pill"><div class="integration-icon">N</div><div><strong>Notion</strong><p>Push structured data into documentation and task systems.</p></div></article>
+            <article class="integration-pill"><div class="integration-icon">T</div><div><strong>Trello</strong><p>Move cards and boards through execution states.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonials" class="section">
+        <div class="container section-panel">
+          <div class="section-head">
+            <div>
+              <div class="section-label">Testimonial Layer</div>
+              <h2>Practical feedback from teams that value execution.</h2>
+            </div>
+            <p>Minimal, technical, and business-focused. No decorative language, only operational value.</p>
+          </div>
+          <div class="testimonial-grid">
+            <article class="testimonial-card">
+              <div class="testimonial-top">
+                <div class="avatar">AM</div>
+                <div>
+                  <strong>Amy, Ops Lead</strong><br>
+                  <span style="color: var(--muted); font-size: 0.9rem;">Automation operations</span>
+                </div>
+              </div>
+              <h3>"We replaced manual routing with one clean system."</h3>
+              <p>Botlix gave us a clear automation layer for support, notifications, and internal task execution.</p>
+              <footer>Fast setup, visible control, and dependable throughput.</footer>
+            </article>
+            <article class="testimonial-card">
+              <div class="testimonial-top">
+                <div class="avatar">RK</div>
+                <div>
+                  <strong>Ravi, Product Manager</strong><br>
+                  <span style="color: var(--muted); font-size: 0.9rem;">Product systems</span>
+                </div>
+              </div>
+              <h3>"The dashboard makes automation feel operational."</h3>
+              <p>We can see active workflows, monitor outputs, and adjust the workflow logic without slowing down the team.</p>
+              <footer>Designed for visibility, not noise.</footer>
+            </article>
+            <article class="testimonial-card">
+              <div class="testimonial-top">
+                <div class="avatar">JT</div>
+                <div>
+                  <strong>Jordan, Founder</strong><br>
+                  <span style="color: var(--muted); font-size: 0.9rem;">Growth systems</span>
+                </div>
+              </div>
+              <h3>"It feels like an automation engine, not a page of features."</h3>
+              <p>Exactly what we needed: a system-centric interface for intelligent bots and connected workflows.</p>
+              <footer>High-confidence execution at scale.</footer>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="cta" class="cta">
+        <div class="container cta-panel">
+          <div class="cta-inner">
+            <div>
+              <div class="section-label">Command the Workflow</div>
+              <h2>Build Smarter Workflows Today</h2>
+              <p>Launch Botlix and turn repetitive operations into a responsive automation system built for intelligent execution.</p>
+            </div>
+            <a class="button button-primary" href="#home">Start Automating</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-panel">
+        <a class="brand" href="#home">
+          <span class="brand-mark">B</span>
+          <span>Botlix</span>
+        </a>
+        <div class="footer-links">
+          <a href="#services">Services</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#integrations">Integrations</a>
+          <a href="#testimonials">Testimonials</a>
+        </div>
+        <div>AI automation and smart bot infrastructure.</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
